@@ -669,7 +669,18 @@ class _Bot(_Car):
         return action
 
     def custom_bot(self, sensors):
-        raise NotImplementedError("You must implement custom_bot")
+        dis_left = sensors[0]
+        dis_front = sensors[1]
+        dis_right = sensors[2]
+
+        if (dis_right == 100):
+            action = 1  # right
+        elif (dis_left == 100):
+            action = 2  # left
+        else:
+            action = 3  # accel
+
+        return action
 
     def choose_action(self):
         sensors = self.sensors
