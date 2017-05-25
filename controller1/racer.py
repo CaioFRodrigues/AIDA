@@ -42,4 +42,5 @@ class Racer:
         return self.__fitness
 
     def calculate_fitness(self, controller):
-        self.__fitness = controller.run_episode(self.__theta)
+        if self.__fitness is None:
+            self.__fitness = controller.run_episode(self.__theta)
