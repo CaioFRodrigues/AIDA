@@ -9,7 +9,7 @@ class Racer:
         '''
 
         self.__theta = []
-
+        self.__fitness = None
         if n_features != -1:
             n_thetas = (n_features + 1) * 5
             self.__theta = [0] * n_thetas
