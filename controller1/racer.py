@@ -18,15 +18,6 @@ class Racer:
         if theta is not None:
             self.__theta = copy.copy(theta)
 
-    @property
-    def theta(self) -> list:
-        return self.__theta
-
-    @theta.setter
-    def theta(self, val: list):
-        if len(val) == len(self.__theta):
-            self.__theta = copy.copy(val)
-
     @classmethod
     def from_racer(Racer, r1: 'Racer') -> 'Racer':
         '''
@@ -38,8 +29,17 @@ class Racer:
         return r2
 
     @property
-    def fitness(self, controller):
-        if self.__fitness is None:
-            self.__fitness = controller.run_episodes(self.__thetas)
+    def theta(self) -> list:
+        return self.__theta
 
+    @theta.setter
+    def theta(self, val: list):
+        if len(val) == len(self.__theta):
+            self.__theta = copy.copy(val)
+
+    @property
+    def fitness(self):
         return self.__fitness
+
+    def calculate_fitness(self, controller):
+        self.__fitness = controller.run_episode(self.__theta)
