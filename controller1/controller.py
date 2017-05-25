@@ -1,5 +1,5 @@
 import controller_template as controller_template
-
+from controller1.genetic_algorithms import Evolution
 
 class Controller(controller_template.Controller):
     def __init__(self, track, evaluate=True, bot_type=None):
