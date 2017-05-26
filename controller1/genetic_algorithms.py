@@ -3,7 +3,6 @@ from numpy import random
 from copy import copy
 from functools import reduce
 from operator import attrgetter
-from controller1.racer import Racer
 
 class Evolution:
     def __init__(self, population_size, n_thetas):
@@ -44,12 +43,6 @@ class Evolution:
         return Racer(thetas=random_thetas)
 
     def random_population(self, controller):
-        r = self.random_racer()
-        t1 = time()
-        r.calculate_fitness(controller)
-        t2 = time()
-        print('%0.3f ms' % ((t2-t1)*1000.0))
-        return
         population = [self.random_racer() for _ in range(0, self.__population_size)]
         [p.calculate_fitness(controller) for p in population]
         population.sort(key=attrgetter('fitness'), reverse=True)
@@ -57,7 +50,7 @@ class Evolution:
 
     def evolve(self, controller):
         self.__population = list(self.random_population(controller))
-        return
+
         gen = 0
         while True:
             gen += 1
