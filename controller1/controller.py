@@ -1,14 +1,12 @@
 import controller_template as controller_template
 from controller1.genetic_algorithms import Evolution
+from numpy import array_split, inner as inner_product
 
 class Controller(controller_template.Controller):
     def __init__(self, track, evaluate=True, bot_type=None, previous_sensor_values=[]):
         super().__init__(track, evaluate=evaluate, bot_type=bot_type)
+        self.previous_sensor_values = previous_sensor_values
 
-
-    #######################################################################
-    ##### METHODS YOU NEED TO IMPLEMENT ###################################
-    #######################################################################
 
     def take_action(self, parameters: list) -> int:
         """
@@ -22,8 +20,11 @@ class Controller(controller_template.Controller):
         """
 
         features = self.compute_features(self.sensors)
-        raise NotImplementedError("This Method Must Be Implemented")
+        q_params = array_split(parameters, 5)
+        action_q = [inner_product(q_param, features) for q_param in q_params]
+        max_action, _ = max(enumerate(action_q, 1), key=lambda a: a[1])
 
+        return max_action
 
 
     def compute_features(self, sensors):
@@ -43,26 +44,28 @@ class Controller(controller_template.Controller):
         :return: A list containing the features you defined
         """
 
-        # features[0] => change in distance to checkpoint_distance
+        # features[0] => constant 1.0
+        #                   used to multiply the raw affinity for an action
+
+        # features[1] => change in distance to checkpoint_distance
         #                   if positive: getting away from checkpoint
         #                   if negative: getting closer to checkpoint
 
-        # features[1] => change in distance to grass from the left side
+        # features[2] => change in distance to grass from the left side
         #                   if positive: getting away from the grass
         #                   if negative: getting closer to the grass
 
-        # features[2] => change in distance to grass from the right side
+        # features[3] => change in distance to grass from the right side
         #                   if positive: getting away from the grass
         #                   if negative: getting closer to the grass
 
-        features = []
+        features = [1.0]
         if len(self.previous_sensor_values) > 0:
-            features.append(sensors[4] - previous_sensor_values[0])
-            features.append(sensors[0] - previous_sensor_values[1])
-            features.append(sensors[2] - previous_sensor_values[2])
+            features.append(sensors[4] - self.previous_sensor_values[1])
+            features.append(sensors[0] - self.previous_sensor_values[2])
+            features.append(sensors[2] - self.previous_sensor_values[3])
         else:
-            features = [sensors[0], sensors[1], sensors[2]] # No previous values, the features just return the current sensor values
-
+            features = [1.0, sensors[0], sensors[1], sensors[2]] # No previous values, the features just return the current sensor values
 
         self.previous_sensor_values = [value for value in sensors]
         return features
