@@ -65,6 +65,7 @@ class Controller(controller_template.Controller):
 
 
         self.previous_sensor_values = [value for value in sensors]
+        return features
 
 
     def learn(self, weights) -> list:
