@@ -44,8 +44,12 @@ class Evolution:
 
     def random_population(self, controller):
         population = [self.random_racer() for _ in range(0, self.__population_size)]
-        [p.calculate_fitness(controller) for p in population]
+
+        for p in population:
+            p.calculate_fitness(controller)
+
         population.sort(key=attrgetter('fitness'), reverse=True)
+
         return population
 
     def evolve(self, controller):
@@ -78,7 +82,8 @@ class Evolution:
         adult_population = elite_population + roulette_population
 
         children_population = self.select_children(adult_population)
-        [c.calculate_fitness(controller) for c in children_population]
+        for c in children_population:
+            c.calculate_fitness(controller)
 
         new_population = adult_population + children_population
         new_population.sort(key=attrgetter('fitness'), reverse=True)
