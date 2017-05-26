@@ -1,11 +1,11 @@
 from time import time
 from numpy import random
 from copy import copy
-from functools import reduce
 from operator import attrgetter
+from controller1.racer import Racer
 
 class Evolution:
-    def __init__(self, population_size, n_thetas):
+    def __init__(self, population_size, n_thetas, seed=None):
         self.__population_size = 2
         self.__n_thetas = 0
         self.__seed = 0
@@ -27,7 +27,10 @@ class Evolution:
 
         self.__population_size = population_size
         self.__n_thetas = n_thetas
-        self.__seed = int(time())
+        if (seed is not None):
+            self.__seed = seed
+        else:
+            self.__seed = int(time())
         random.seed(self.__seed)
 
     @property
@@ -35,8 +38,8 @@ class Evolution:
         return self.__seed
 
     def random_theta(self, n=None):
-        # TODO: check if [-100, 100] is an appropriate range for the thetas
-        return random.uniform(-100.0, 100.0, size=self.__n_thetas)
+        # TODO: check if [-1, 1] is an appropriate range for the thetas
+        return random.uniform(-1.0, 1.0, size=n)
 
     def random_racer(self):
         random_thetas = self.random_theta(n=self.__n_thetas)
@@ -53,6 +56,8 @@ class Evolution:
         return population
 
     def evolve(self, controller):
+        print("seed:", self.seed)
+
         self.__population = list(self.random_population(controller))
 
         gen = 0
@@ -118,6 +123,7 @@ class Evolution:
 
         children = []
         for _ in range(0, children_slots):
+            # TODO: stop selecting random parents to breed?
             r1, r2 = random.choice(population, 2)
             c1, c2 = self.breed(r1, r2)
             children.extend([c1, c2])
@@ -136,29 +142,12 @@ class Evolution:
         return child1, child2
 
     def crossover(self, r1: Racer, r2: Racer) -> Racer:
-        selected_thetas = []
-        for i in range(0, self.__n_thetas):
-            if random.ranf() < 0.50: # 50% chance
-                selected_theta = r1.theta[i]
-            else:
-                selected_theta = r2.theta[i]
-
-            ''' this could be used as a third kind of crossover: mixing both parents '''
-#            chance = random.ranf()
-#            if chance < 0.50: # 50% chance
-#                selected_theta = r1.theta[i]
-#            else:# if chance < 0.95: # another 47.5% chance
-#                selected_theta = r2.theta[i]
-#            else: # 5% chance
-#                selected_theta = (r1.theta[i] + r2.theta[i]) / 2
-
-            selected_thetas.append(selected_theta)
-
+        selected_thetas = [random.choice(thetas) for thetas in zip(r1.thetas, r2.thetas)]
         return Racer(thetas=selected_thetas)
 
     def mutate(self, racer: Racer) -> Racer:
-        theta_idx = random.random_integers(0, self.__n_thetas - 1)
         new_thetas = racer.thetas
+        theta_idx = random.random_integers(0, self.__n_thetas - 1)
         new_thetas[theta_idx] = self.random_theta()
-        racer.thetas(new_thetas)
+        racer.thetas = new_thetas
         return racer
