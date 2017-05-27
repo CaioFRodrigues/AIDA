@@ -86,14 +86,20 @@ class Controller(controller_template.Controller):
             # features[2]
                 front_vector = sensors[1] - self.previous_sensor_values[1]
                 left_vector = sensors[0] - self.previous_sensor_values[0]
-                angle = arcsin(front_vector / sqrt(front_vector ** 2 + left_vector ** 2))
-                features.append(angle)
+                if sqrt(front_vector ** 2 + left_vector ** 2) != 0:
+                    angle = arcsin(front_vector / sqrt(front_vector ** 2 + left_vector ** 2))
+                    features.append(angle)
+                else:
+                    features.append(1)
 
             # features[3]
                 front_vector = sensors[1] - self.previous_sensor_values[1]
                 right_vector = sensors[2] - self.previous_sensor_values[2]
-                angle = arcsin(front_vector / sqrt(front_vector ** 2 + right_vector ** 2))
-                features.append(angle)
+                if sqrt(front_vector ** 2 + right_vector ** 2) != 0:
+                    angle = arcsin(front_vector / sqrt(front_vector ** 2 + right_vector ** 2))
+                    features.append(angle)
+                else:
+                    features.append(1)
 
             # features[4]
                 if sensors[8] == 0:
