@@ -46,10 +46,21 @@ class Racer:
     def adjusted_fitness(self):
         return self.__adjusted_fitness
 
-    def calculate_fitness(self, controller):
+    def calculate_fitness(self, controller, evaluate_averages=False):
         if self.__fitness is None:
-            self.__fitness = controller.run_episode(self.__thetas)
+            if not evaluate_averages:
+                self.__fitness = controller.run_episode(self.__thetas)
+            else:
+                controller.bot_type = None
+                controller.game_state = controller.no_bot_state
+                fitness_none = controller.run_episode(self.__thetas)
+                controller.bot_type = 'parked_bots'
+                controller.game_state = controller.parked_bots_state
+                fitness_parked = controller.run_episode(self.__thetas)
+                controller.bot_type = 'ninja_bot'
+                controller.game_state = controller.ninja_bot_state
+                fitness_ninja = controller.run_episode(self.__thetas)
+                self.__fitness = (fitness_none + fitness_parked + fitness_ninja) / 3
 
     def calculate_adjusted_fitness(self, adjust_amount):
-        if self.__adjusted_fitness is None:
-            self.__adjusted_fitness = self.__fitness - adjust_amount
+        self.__adjusted_fitness = self.__fitness - adjust_amount

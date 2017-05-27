@@ -4,6 +4,7 @@ from controller1.hill_climbing import Hill_Climbing
 from controller1.simulated_annealing import Simulated_Annealing
 from numpy import array_split, inner as inner_product, arcsin
 from math import sqrt
+from simulator import Simulation
 
 
 class Controller(controller_template.Controller):

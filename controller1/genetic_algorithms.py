@@ -5,19 +5,22 @@ from operator import attrgetter
 from controller1.racer import Racer
 
 class Evolution:
-    def __init__(self, max_population_size, n_thetas, seed=None, adam_genes=None):
-        if max_population_size <= n_thetas:
-            raise ValueError("max_population_size must be larger than n_thetas")
+    def __init__(self, max_population_size, n_actions, n_features, seed=None, adam_genes=None, best_overall=False):
+        if max_population_size <= n_actions * n_features:
+            raise ValueError("max_population_size must be greater than n_actions * n_features")
 
         # TODO: check if min and max population sizes are appropriate
-        if max_population_size < 2 or max_population_size > 100:
-            raise ValueError("max_population_size must be between 2 and 100")
+        if max_population_size < 2:
+            raise ValueError("max_population_size must be greater than 2")
 
-        if n_thetas <= 0:
-            raise ValueError("n_thetas must be greater than 0")
+        if n_actions <= 0:
+            raise ValueError("n_actions must be greater than 0")
+
+        if n_features <= 0:
+            raise ValueError("n_features must be greater than 0")
 
         self.__max_population_size = max_population_size
-        self.__n_thetas = n_thetas
+        self.__n_thetas = n_actions * n_features
         self.__seed = seed
         self.__population = []
         self.__percentage_mutation = 0.01
@@ -25,6 +28,7 @@ class Evolution:
         self.__elite_slots = int(self.__max_population_size * self.__percentage_elitism)
         self.__children_slots = self.__max_population_size - self.__elite_slots
         self.__breedings_per_gen = int(self.__children_slots / 2)
+        self.__evaluate_averages = best_overall
 
         if adam_genes is not None:
             self.__population = [Racer(adam_genes)]
@@ -70,7 +74,7 @@ class Evolution:
         self.__population += random_population
 
         for p in self.__population:
-            p.calculate_fitness(controller)
+            p.calculate_fitness(controller, self.__evaluate_averages)
 
         self.__population.sort(key=attrgetter('fitness'), reverse=True)
 
@@ -102,7 +106,7 @@ class Evolution:
             children_population += [c1, c2]
 
         for c in children_population:
-            c.calculate_fitness(controller)
+            c.calculate_fitness(controller, self.__evaluate_averages)
 
         return children_population
 
