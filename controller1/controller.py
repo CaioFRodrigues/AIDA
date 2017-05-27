@@ -1,6 +1,7 @@
 import controller_template as controller_template
 from controller1.genetic_algorithms import Evolution
 from controller1.hill_climbing import Hill_Climbing
+from controller1.simulated_annealing import Simulated_Annealing
 from numpy import array_split, inner as inner_product, arcsin
 from math import sqrt
 
@@ -138,4 +139,7 @@ class Controller(controller_template.Controller):
         :param weights: initial weights of the controller (either loaded from a file or generated randomly)
         :return: the best weights found by your learning algorithm, after the learning process is over
         """
+        anneal = Simulated_Annealing(weights,self)
+        weight = anneal.simulate(self)
+        return weight
         #raise NotImplementedError("This Method Must Be Implemented")
