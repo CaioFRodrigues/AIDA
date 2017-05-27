@@ -1,6 +1,6 @@
 import controller_template as controller_template
 from controller1.genetic_algorithms import Evolution
-from numpy import array_split, inner as inner_product
+from numpy import array_split, inner as inner_product, arcsine
 
 class Controller(controller_template.Controller):
     def __init__(self, track, evaluate=True, bot_type=None, previous_sensor_values=[]):
@@ -51,21 +51,70 @@ class Controller(controller_template.Controller):
         #                   if positive: getting away from checkpoint
         #                   if negative: getting closer to checkpoint
 
-        # features[2] => change in distance to grass from the left side
+        # features[2] => angle between car movement and left distance to grass
         #                   if positive: getting away from the grass
         #                   if negative: getting closer to the grass
+        #                   the smallest the angle, the more it needs to turn right
 
         # features[3] => change in distance to grass from the right side
         #                   if positive: getting away from the grass
         #                   if negative: getting closer to the grass
+        #                   the smallest the angle, the more it needs to turn left
+
+        # features[4] => adversary proximity
+        #                   if zero: not close enough to make the enemy the priority instead of the track
+        #                   if positive: getting further away from the enemy_detected
+        #                   if negative: getting closer to the enemy_detected
+        #                   doesn't matter if adversary is in the front or behind, the closer the more
+        #                   it needs to accelerate
+
+        # features[5] => attempt to pass adversary in front_vector
+        #               needs to have a little more weight than the grass proximity feature if this is not zero
+        #               if positive: turn to the left
+        #               if negative: turn to the right
+
+        # possible feature[6] => attempt to stay as close as possible to position 1/-1 to the adversary
+        # possible feature[7] => keep as close to the right edge as possible 
 
         features = [1.0]
         if len(self.previous_sensor_values) > 0:
-            features.append(sensors[4] - self.previous_sensor_values[1])
-            features.append(sensors[0] - self.previous_sensor_values[2])
-            features.append(sensors[2] - self.previous_sensor_values[3])
+
+            # features[1]
+                features.append(sensors[1] - self.previous_sensor_values[1])
+
+            # features[2]
+                front_vector = sensors[1] - self.previous_sensor_values[1]
+                left_vector = sensors[0] - self.previous_sensor_values[0]
+                angle = numpy.arcsine(front_vector / sqrt(front_vector ** 2 + left_vector ** 2))
+                features.append(angle)
+
+            # features[3]
+                front_vector = sensors[1] - self.previous_sensor_values[1]
+                right_vector = sensors[2] - self.previous_sensor_values[2]
+                angle = numpy.arcsine(front_vector / sqrt(front_vector ** 2 + right_vector ** 2))
+                features.append(angle)
+
+            # features[4]
+                if sensors[8] == 0:
+                    features.append(0)
+                else:
+                    features.append(sensors[6] - self.previous_sensor_values[6])
+
+            # features[5]
+                if sensors[8] == 0:
+                    features.append(0)
+                else:
+                    # Negative: coming from the left / positive: coming from the right
+                    # Absolute value larger than 1: coming from behind / else: coming from the front
+                    enemy_position = sensors[7] / 90.0
+                    if (abs(enemy_position) > 1):
+                        features.append(0)
+                    else:
+                        features.append(enemy_position)
+
+
         else:
-            features = [1.0, sensors[0], sensors[1], sensors[2]] # No previous values, the features just return the current sensor values
+            features = [1.0, sensors[4], sensors[0], sensors[2], 0, 0] # No previous values, the features just return the current sensor values
 
         self.previous_sensor_values = [value for value in sensors]
         return features
