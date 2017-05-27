@@ -92,25 +92,24 @@ class Controller(controller_template.Controller):
                 left_vector = sensors[0] - self.previous_sensor_values[0]
                 if sqrt(front_vector ** 2 + left_vector ** 2) != 0:
                     angle = arcsin(front_vector / sqrt(front_vector ** 2 + left_vector ** 2))
-                    features.append( 2* (angle - (-90)/90 - (-90)) -1 )
+                    features.append(angle)
                 else:
-                    features.append(0)
+                    features.append(1)
 
             # features[3]
                 front_vector = sensors[1] - self.previous_sensor_values[1]
                 right_vector = sensors[2] - self.previous_sensor_values[2]
                 if sqrt(front_vector ** 2 + right_vector ** 2) != 0:
                     angle = arcsin(front_vector / sqrt(front_vector ** 2 + right_vector ** 2))
-                    features.append( 2* (angle - (-90)/90 - (-90)) -1 )
+                    features.append(angle)
                 else:
-                    features.append(0)
+                    features.append(1)
 
             # features[4]
                 if sensors[8] == 0:
                     features.append(0)
                 else:
-                    enemy_proximity = sensors[6] - self.previous_sensor_values[6]
-                    features.append( 2 * (enemy_proximity/100))
+                    features.append(sensors[6] - self.previous_sensor_values[6])
 
             # features[5]
                 if sensors[8] == 0:
@@ -134,13 +133,9 @@ class Controller(controller_template.Controller):
 
     def learn(self, weights) -> list:
         """
-        IMPLEMENT YOUR LEARNING METHOD (i.e. YOUR LOCAL SEARCH ALGORITHM) HERE
-
-        HINT: you can call self.run_episode (see controller_template.py) to evaluate a given set of weights
         :param weights: initial weights of the controller (either loaded from a file or generated randomly)
         :return: the best weights found by your learning algorithm, after the learning process is over
         """
         anneal = Simulated_Annealing(weights,self)
         weight = anneal.simulate(self)
         return weight
-        #raise NotImplementedError("This Method Must Be Implemented")
