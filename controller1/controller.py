@@ -136,6 +136,11 @@ class Controller(controller_template.Controller):
         :param weights: initial weights of the controller (either loaded from a file or generated randomly)
         :return: the best weights found by your learning algorithm, after the learning process is over
         """
-        anneal = Simulated_Annealing(weights,self)
-        weight = anneal.simulate(self)
-        return weight
+        #anneal = Simulated_Annealing(weights,self)
+        #weight = anneal.simulate(self)
+        #return weight
+        self.no_bot_state = Simulation(self.track_name, None)
+        self.parked_bots_state = Simulation(self.track_name, 'parked_bots')
+        self.ninja_bot_state = Simulation(self.track_name, 'ninja_bot')
+        evo = Evolution(max_population_size=60, n_actions=5, n_features=6, adam_genes=weights, best_overall=True)
+        winner = evo.evolve(generations=500, controller=self)
