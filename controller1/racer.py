@@ -2,7 +2,7 @@ from copy import copy
 
 class Racer:
 
-    def __init__(self, n_features=-1, thetas=None):
+    def __init__(self, thetas=None, n_features=-1):
         '''
         Use either n_features != -1 to init an empty racer with all the needed thetas,
         or thetas to use the given array of thetas
