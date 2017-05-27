@@ -101,17 +101,11 @@ class Evolution:
         return children_population
 
     def select_roulette(self, roulette_max) -> Racer:
-        roulette_selected = self.__population[-1]
-
         roll = random.uniform(0, roulette_max)
-        aggregate = 0
         for i,p in enumerate(self.__population):
-            aggregate += p.adjusted_fitness
-            if aggregate >= roll:
-                roulette_selected = self.__population[i]
-                break
-
-        return roulette_selected
+            roll -= p.adjusted_fitness
+            if roll <= 0:
+                return self.__population[i]
 
     def breed(self, r1: Racer, r2: Racer) -> Racer:
         child = self.crossover(r1, r2)
