@@ -10,6 +10,7 @@ class Racer:
 
         self.__thetas = []
         self.__fitness = None
+        self.__adjusted_fitness = None
 
         if n_features != -1:
             n_thetas = (n_features + 1) * 5
@@ -41,6 +42,14 @@ class Racer:
     def fitness(self):
         return self.__fitness
 
+    @property
+    def adjusted_fitness(self):
+        return self.__adjusted_fitness
+
     def calculate_fitness(self, controller):
         if self.__fitness is None:
             self.__fitness = controller.run_episode(self.__thetas)
+
+    def calculate_adjusted_fitness(self, adjust_amount):
+        if self.__adjusted_fitness is None:
+            self.__adjusted_fitness = self.__fitness - adjust_amount
