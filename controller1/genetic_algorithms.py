@@ -22,9 +22,8 @@ class Evolution:
         self.__population = []
         self.__percentage_mutation = 0.01
         self.__percentage_elitism = 0.10
-        self.__percentage_children = 1.0 - self.__percentage_elitism
         self.__elite_slots = int(self.__population_size * self.__percentage_elitism)
-        self.__children_slots = int(self.__population_size * self.__percentage_children)
+        self.__children_slots = self.__population_size - self.__elite_slots
         self.__breedings_per_gen = int(self.__children_slots / 2)
 
         if (self.__seed is None):
@@ -101,7 +100,7 @@ class Evolution:
 
         return children_population
 
-    def select_roulette(self, roulette_max):
+    def select_roulette(self, roulette_max) -> Racer:
         roulette_selected = self.__population[-1]
 
         roll = random.uniform(0, roulette_max)
@@ -114,7 +113,7 @@ class Evolution:
 
         return roulette_selected
 
-    def breed(self, r1: Racer, r2: Racer):
+    def breed(self, r1: Racer, r2: Racer) -> Racer:
         child = self.crossover(r1, r2)
 
         if random.ranf() < self.__percentage_mutation:
@@ -126,6 +125,6 @@ class Evolution:
         selected_thetas = [random.choice(thetas) for thetas in zip(r1.thetas, r2.thetas)]
         return Racer(thetas=selected_thetas)
 
-    def mutate(self, racer: Racer) -> Racer:
+    def mutate(self, racer: Racer):
         theta_idx = random.random_integers(0, self.__n_thetas - 1)
         racer.thetas[theta_idx] = self.random_theta()
