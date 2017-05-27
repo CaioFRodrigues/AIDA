@@ -115,9 +115,7 @@ class Evolution:
 
     def breed(self, r1: Racer, r2: Racer) -> Racer:
         child = self.crossover(r1, r2)
-
-        if random.ranf() < self.__percentage_mutation:
-            self.mutate(child)
+        self.mutate(child)
 
         return child
 
@@ -126,5 +124,6 @@ class Evolution:
         return Racer(thetas=selected_thetas)
 
     def mutate(self, racer: Racer):
-        theta_idx = random.random_integers(0, self.__n_thetas - 1)
-        racer.thetas[theta_idx] = self.random_theta()
+        for i in range(0, self.__n_thetas):
+            if random.ranf() < self.__percentage_mutation:
+                racer.thetas[i] = self.random_theta()
