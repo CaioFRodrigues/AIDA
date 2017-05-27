@@ -1,6 +1,7 @@
 import controller_template as controller_template
 from controller1.genetic_algorithms import Evolution
-from numpy import array_split, inner as inner_product, arcsine
+from numpy import array_split, inner as inner_product, arcsin
+from math import sqrt
 
 class Controller(controller_template.Controller):
     def __init__(self, track, evaluate=True, bot_type=None, previous_sensor_values=[]):
@@ -74,7 +75,7 @@ class Controller(controller_template.Controller):
         #               if negative: turn to the right
 
         # possible feature[6] => attempt to stay as close as possible to position 1/-1 to the adversary
-        # possible feature[7] => keep as close to the right edge as possible 
+        # possible feature[7] => keep as close to the right edge as possible
 
         features = [1.0]
         if len(self.previous_sensor_values) > 0:
@@ -85,13 +86,13 @@ class Controller(controller_template.Controller):
             # features[2]
                 front_vector = sensors[1] - self.previous_sensor_values[1]
                 left_vector = sensors[0] - self.previous_sensor_values[0]
-                angle = numpy.arcsine(front_vector / sqrt(front_vector ** 2 + left_vector ** 2))
+                angle = arcsin(front_vector / sqrt(front_vector ** 2 + left_vector ** 2))
                 features.append(angle)
 
             # features[3]
                 front_vector = sensors[1] - self.previous_sensor_values[1]
                 right_vector = sensors[2] - self.previous_sensor_values[2]
-                angle = numpy.arcsine(front_vector / sqrt(front_vector ** 2 + right_vector ** 2))
+                angle = arcsin(front_vector / sqrt(front_vector ** 2 + right_vector ** 2))
                 features.append(angle)
 
             # features[4]
