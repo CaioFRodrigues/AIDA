@@ -1,7 +1,9 @@
 import controller_template as controller_template
 from controller1.genetic_algorithms import Evolution
+from controller1.hill_climbing import Hill_Climbing
 from numpy import array_split, inner as inner_product, arcsin
 from math import sqrt
+
 
 class Controller(controller_template.Controller):
     def __init__(self, track, evaluate=True, bot_type=None, previous_sensor_values=[]):
