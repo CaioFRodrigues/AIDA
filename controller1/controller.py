@@ -49,35 +49,56 @@ class Controller(controller_template.Controller):
         :return: A list containing the features you defined
         """
 
-        d_left, d_front, d_right = sensors[:3]
+        d_left, d_front, d_right, s_on_track = sensors[:4]
+        d_next_checkpoint, v_car, d_enemy, a_enemy, s_enemy = sensors[4:]
 
         feature = [1.0, 0, 0, 0, 0]
 
         # incentives to accelerate
         feature[1] = 0.0
-        if d_left < 100 and d_right < 100:
+        if s_on_track and d_left < 100 and d_right < 100:
             feature[1] += 0.5
-        if d_front == 100:
+        else:
+            feature[1] -= 0.5
+        if d_front == 100 and (not s_enemy or a_enemy < -45 or a_enemy > 45):
             feature[1] += 0.5
+        else:
+            feature[1] -= 0.5
 
         # incentives to turn left
         feature[2] = 0.0
-        if d_right < 100 and d_front < 100:
+        if s_on_track and d_right < 100 and d_front < 100 \
+           or s_enemy and d_enemy < 75 and a_enemy > 45 and a_enemy < 135:
             feature[2] += 0.5
+        else:
+            feature[2] -= 0.5
         if d_left == 100:
             feature[2] += 0.5
+        else:
+            feature[2] -= 0.5
 
         # incentives to turn right
         feature[3] = 0.0
-        if d_left < 100 and d_front < 100:
+        if s_on_track and d_left < 100 and d_front < 100 \
+           or s_enemy and d_enemy < 75 and a_enemy < -45 and a_enemy > -135:
             feature[3] += 0.5
+        else:
+            feature[3] -= 0.5
         if d_right == 100:
             feature[3] += 0.5
+        else:
+            feature[3] -= 0.5
 
         # incentives to break
         feature[4] = 0.0
-        if d_front < 100:
-            feature[4] += 1
+        if s_on_track and d_front < 100:
+            feature[4] += 0.5
+        else:
+            feature[4] -= 0.5
+        if s_enemy and a_enemy > -45 and a_enemy < 45:
+            feature[4] += 0.5
+        else:
+            feature[4] -= 0.5
 
         return feature
 
