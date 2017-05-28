@@ -63,7 +63,7 @@ class Racer:
                 controller.game_state = controller.track_2_state
                 fitness_track_2 = controller.run_episode(self.__thetas)
                 controller.track = controller.track_3_state.track
-                controller.track_name = controller.track_2_state.track
+                controller.track_name = controller.track_3_state.track
                 controller.game_state = controller.track_3_state
                 fitness_track_3 = controller.run_episode(self.__thetas)
                 controller.track = orig_track
