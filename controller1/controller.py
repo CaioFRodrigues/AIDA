@@ -5,7 +5,7 @@ from controller1.simulated_annealing import Simulated_Annealing
 from numpy import array_split, inner as inner_product, arcsin
 from math import sqrt
 from simulator import Simulation
-
+import tracks_config
 
 class Controller(controller_template.Controller):
     def __init__(self, track, evaluate=True, bot_type=None, previous_sensor_values=[]):
@@ -110,8 +110,10 @@ class Controller(controller_template.Controller):
         #anneal = Simulated_Annealing(weights,self)
         #weight = anneal.simulate(self)
         #return weight
-        self.no_bot_state = Simulation(self.track_name, None)
+        self.track_1_state = Simulation(tracks_config.track1, None)
+        self.track_2_state = Simulation(tracks_config.track2, None)
+        self.track_3_state = Simulation(tracks_config.track3, None)
         self.parked_bots_state = Simulation(self.track_name, 'parked_bots')
         self.ninja_bot_state = Simulation(self.track_name, 'ninja_bot')
-        evo = Evolution(max_population_size=60, n_actions=5, n_features=5, adam_genes=weights, best_overall=False)
+        evo = Evolution(max_population_size=50, n_actions=5, n_features=5, adam_genes=weights, best_overall=False)
         winner = evo.evolve(generations=500, controller=self)

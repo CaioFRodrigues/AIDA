@@ -51,16 +51,30 @@ class Racer:
             if not evaluate_averages:
                 self.__fitness = controller.run_episode(self.__thetas)
             else:
+                orig_track = controller.track
+                orig_track_name = controller.track_name
                 controller.bot_type = None
-                controller.game_state = controller.no_bot_state
-                fitness_none = controller.run_episode(self.__thetas)
+                controller.track = controller.track_1_state.track
+                controller.track_name = controller.track_1_state.track
+                controller.game_state = controller.track_1_state
+                fitness_track_1 = controller.run_episode(self.__thetas)
+                controller.track = controller.track_2_state.track
+                controller.track_name = controller.track_2_state.track
+                controller.game_state = controller.track_2_state
+                fitness_track_2 = controller.run_episode(self.__thetas)
+                controller.track = controller.track_3_state.track
+                controller.track_name = controller.track_2_state.track
+                controller.game_state = controller.track_3_state
+                fitness_track_3 = controller.run_episode(self.__thetas)
+                controller.track = orig_track
+                controller.track_name = orig_track_name
                 controller.bot_type = 'parked_bots'
                 controller.game_state = controller.parked_bots_state
                 fitness_parked = controller.run_episode(self.__thetas)
                 controller.bot_type = 'ninja_bot'
                 controller.game_state = controller.ninja_bot_state
                 fitness_ninja = controller.run_episode(self.__thetas)
-                self.__fitness = (fitness_none + fitness_parked + fitness_ninja) / 3
+                self.__fitness = (fitness_track_1 + fitness_track_2 + fitness_track_3 + fitness_parked + fitness_ninja) / 5
 
     def calculate_adjusted_fitness(self, adjust_amount):
         self.__adjusted_fitness = self.__fitness - adjust_amount
