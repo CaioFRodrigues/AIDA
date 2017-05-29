@@ -2,15 +2,13 @@ import controller_template as controller_template
 from controller1.genetic_algorithms import Evolution
 from controller1.hill_climbing import Hill_Climbing
 from controller1.simulated_annealing import Simulated_Annealing
-from numpy import array_split, inner as inner_product, arcsin
-from math import sqrt
+from numpy import array_split, inner as inner_product
 from simulator import Simulation
 import tracks_config
 
 class Controller(controller_template.Controller):
-    def __init__(self, track, evaluate=True, bot_type=None, previous_sensor_values=[]):
+    def __init__(self, track, evaluate=True, bot_type=None):
         super().__init__(track, evaluate=evaluate, bot_type=bot_type)
-        self.previous_sensor_values = previous_sensor_values
 
 
     def take_action(self, parameters: list) -> int:
