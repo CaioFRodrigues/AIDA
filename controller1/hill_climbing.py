@@ -26,7 +26,7 @@ class Hill_Climbing:
         returning a list with twice the size
         '''
         best_result = self.__result
-        best_weights = deepcopy(self.__weights)
+        best_weights = self.__weights
         print("Trying to get something new")
         for index,theta in enumerate(self.__weights):
        
@@ -37,7 +37,7 @@ class Hill_Climbing:
             #Checks if current weight is the best one
             if (current_result > best_result):
                 best_result = current_result
-                best_weights = deepcopy(self.__weights)
+                best_weights = self.__weights
                 
                
                
@@ -48,7 +48,7 @@ class Hill_Climbing:
             #Checks if current weight is the best one
             if current_result > best_result:
                 best_result = current_result
-                best_weights = deepcopy(self.__weights)
+                best_weights = self.__weights
                 
             #Returns weight to its original condition, tries again
             self.__weights[index] = self.__weights[index] + 1
