@@ -670,7 +670,6 @@ class _Bot(_Car):
 
     def custom_bot(self, sensors):
         dis_left = sensors[0]
-        dis_front = sensors[1]
         dis_right = sensors[2]
 
         if (dis_right == 100):
