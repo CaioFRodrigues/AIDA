@@ -102,18 +102,24 @@ class Controller(controller_template.Controller):
 
         return feature
 
+
     def learn(self, weights) -> list:
         """
         :param weights: initial weights of the controller (either loaded from a file or generated randomly)
         :return: the best weights found by your learning algorithm, after the learning process is over
         """
+        #hill = Hill_Climbing(weights,self)
+        #weights = hill.climb(self)
+        #print(weights)
         #anneal = Simulated_Annealing(weights,self)
         #weight = anneal.simulate(self)
         #return weight
         self.track_1_state = Simulation(tracks_config.track1, None)
         self.track_2_state = Simulation(tracks_config.track2, None)
         self.track_3_state = Simulation(tracks_config.track3, None)
-        self.parked_bots_state = Simulation(self.track_name, 'parked_bots')
-        self.ninja_bot_state = Simulation(self.track_name, 'ninja_bot')
+        self.track_1_parked_state = Simulation(tracks_config.track1, 'parked_bots')
+        self.track_3_parked_state = Simulation(tracks_config.track3, 'parked_bots')
+        self.track_1_ninja_state = Simulation(tracks_config.track1, 'ninja_bot')
+        self.track_3_ninja_state = Simulation(tracks_config.track3, 'ninja_bot')
         evo = Evolution(max_population_size=50, n_actions=5, n_features=5, adam_genes=weights, best_overall=True)
         winner = evo.evolve(generations=500, controller=self)
