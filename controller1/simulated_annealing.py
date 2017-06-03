@@ -5,8 +5,8 @@ from random import randrange
 from math import exp
 class Simulated_Annealing:
     '''
-    Classe Simulated_Annealing - Executa o Simulated_Annealing alterando os thetas com temperatura 100
-    Chamar com:
+    Classe Simulated_Annealing - Executes Simulated_Annealing
+    Call with:
         anneal = Simulated_Annealing(weights,self)
         weights = anneal.simulate(self)
     '''
@@ -18,7 +18,7 @@ class Simulated_Annealing:
     def simulate (self, controller):
         while (self.__temp != 0):
             self.__weights = self.__get_neightbor(controller)
-            self.__temp = self.__temp - 1
+            self.__temp = self.__temp - 10
             print (self.__result)
         return self.__weights
  
@@ -28,7 +28,7 @@ class Simulated_Annealing:
         returning a list with twice the size
         '''
         weights = self.__weights
-        N = 10
+        N = 100
         for i in range(0,N):
             weights = self.__weights
           
@@ -61,7 +61,6 @@ class Simulated_Annealing:
             return True
         else:
             percent = exp(delta/self.__temp)
-            print (percent)
             rand =  randrange(0,100)
 
             if (percent < rand):

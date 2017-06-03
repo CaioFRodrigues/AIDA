@@ -27,7 +27,6 @@ class Hill_Climbing:
         '''
         best_result = self.__result
         best_weights = self.__weights
-        print("Trying to get something new")
         for index,theta in enumerate(self.__weights):
        
             #Tries closest theta by adding 1
